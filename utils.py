@@ -91,6 +91,14 @@ def get_recommended_homes(recommendation, user_id):
 
     return filtered.drop(columns='geo_sum')
 
+# Основная функция - рекоммендательная система
+def rec_system(user_type, user_id=666):
+    user_actions = search_history(user_id, user_type)
+    homes = pd.read_csv('data/homes_fixed_scaled.csv')
 
+    recs = make_recommendations(homes, user_actions)
+    df_recommendations = get_recommended_homes(recs, user_id)
+
+    return df_recommendations
 
 print("utils.py загр")

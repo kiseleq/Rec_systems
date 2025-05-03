@@ -79,4 +79,18 @@ def make_recommendations(homes_fixed, user_actions):
     # Вывод рекомендаций (id)
     return final_recommendations
 
-print("utils.py загружен")
+def get_recommended_homes(recommendation, user_id):
+    homes_origin = pd.read_csv('data/homes_new.csv')
+    
+    # Фильтруем только рекомендованные дома
+    recommended_ids = recommendation[user_id]
+    filtered = homes_origin[homes_origin['id'].isin(recommended_ids)]
+    
+    # Сортируем по порядку в списке recommendation[user_id]
+    filtered = filtered.set_index('id').loc[recommended_ids].reset_index()
+
+    return filtered.drop(columns='geo_sum')
+
+
+
+print("utils.py загр")

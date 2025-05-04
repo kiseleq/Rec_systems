@@ -47,23 +47,14 @@ def health():
 def predict_model(input_data: PredictionInput):
     global request_count
     request_count += 1
-    try:
-        print("Получен запрос с типом:", input_data.type)
-        new_data = pd.DataFrame({
-            'Type': [input_data.type]
-        })
-        print("DataFrame создан:", new_data)
 
-        recommendation = rec_system(new_data)
-        print("Рекомендации получены:", recommendation.head())
-        
-        return recommendation.to_dict(orient="records")
-    except Exception as e:
-        import traceback
-        print("Произошла ошибка:")
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Ошибка: {e}")
+    new_data = pd.DataFrame({
+        'Type': [input_data.type]
+    })
 
+    recommendation = rec_system(new_data)
+    
+    return recommendation.to_dict(orient="records")
 
 
 

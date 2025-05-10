@@ -16,6 +16,10 @@ curl -X GET http://127.0.0.1:5000/health
 curl -X GET http://127.0.0.1:5000/stats
 curl -X POST http://127.0.0.1:5000/predict_model -H "Content-Type: application/json" -d "{\"type\": 3}"
 
+Перезапуск сервера
+uvicorn app_api:app --host 127.0.0.1 --port 5000 --reload
+
+
 '''
 
 from fastapi import FastAPI, Request, HTTPException

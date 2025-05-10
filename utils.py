@@ -1,18 +1,9 @@
 import random
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import plotly.express as px
-import plotly.figure_factory as ff
+
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.inspection import permutation_importance
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.stats import ttest_ind
 from sklearn.preprocessing import MinMaxScaler

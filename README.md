@@ -2,4 +2,8 @@
 ---
 Проект по предмету "Рекоммендательные системы"
 
-3.05 Создал 3 функции для генерации истории и выдачи рекоммендаций
+Запустим сервис apartment-reccomendation-service:
+
+docker build -t apartment-reccomendation-service:latest .   
+
+docker run -d --name apartment-reccomendation-service -p 500:5000 apartment-reccomendation-service:latest

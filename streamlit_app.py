@@ -1,37 +1,100 @@
 import streamlit as st 
 import requests
 import pandas as pd
+import pydeck as pdk
 from requests.exceptions import ConnectionError
 
+# Настройки API
 ip_api = "127.0.0.1"
 port_api = "500"
 
-# Заголовок приложения
-st.title("Recommendation system (development)")
+# Сайдбар с вводом параметров
+st.sidebar.title("🔧 Параметры поиска")
 
-# Ввод данных
-st.write("Enter your type:")
+type = st.sidebar.selectbox("Выберите тип клиента:", [1, 2, 3, 4, 5])
+run_button = st.sidebar.button("🔍 Подобрать рекомендации")
 
-# Выпадающее меню для выбора класса билета
-type = st.selectbox("Person type", [1, 2, 3, 4, 5])
+# Основной заголовок
+st.title("🏠 Recommendation System")
+st.markdown("Добро пожаловать в демо рекомендательной системы недвижимости! Выберите параметр в сайдбаре и получите подборку подходящих вариантов.")
 
-# Кнопка для отправки запроса
-if st.button("Make recommendation"):
-    # Подготовка данных для отправки
+# Если нажали кнопку
+if run_button:
     data = {
         "type": int(type),
     }
 
     try:
-        # Отправка запроса к Flask API
         response = requests.post(f"http://{ip_api}:{port_api}/predict_model", json=data)
 
-        # Проверка статуса ответа
         if response.status_code == 200:
             predictions = response.json()
-            df = pd.DataFrame(predictions)
-            st.dataframe(df)
+
+            if predictions:
+                df = pd.DataFrame(predictions)
+
+                # Добавим отформатированную цену без дробей и с пробелами
+                df['formatted_price'] = df['price'].apply(lambda x: format(x, ',.0f').replace(',', ' '))
+
+                st.success(f"🎉 Найдено {len(df)} рекомендаций")
+
+                # Топ-3 первых вариантов
+                st.subheader("🏡 Топ-3 предложения")
+
+                top3 = df.head(3)
+                for _, row in top3.iterrows():
+                    st.markdown(f"""
+                    **💰 Цена:** {row['formatted_price']} ₽  
+                    📐 **Площадь:** {row['area']} м²  
+                    🛏️ **Комнат:** {row['rooms']}  
+                    📍 **Координаты:** {row['geo_lat']}, {row['geo_lon']}  
+                    --- 
+                    """)
+
+                # Отображение полной таблицы
+                st.subheader("📊 Все рекомендации")
+                st.dataframe(df)
+
+                # Карта с точками фиксированного размера через pydeck
+                st.subheader("🗺️ Карта объектов")
+
+                layer = pdk.Layer(
+                    "ScatterplotLayer",
+                    data=df,
+                    get_position="[geo_lon, geo_lat]",
+                    get_color="[255, 255, 0, 255]",  # Яркий жёлтый, непрозрачный
+                    get_radius=30,
+                    pickable=True
+                )
+
+                view_state = pdk.ViewState(
+                    latitude=df['geo_lat'].mean(),
+                    longitude=df['geo_lon'].mean(),
+                    zoom=11,
+                    pitch=0
+                )
+
+                tooltip = {
+                    "html": "<b>ID:</b> {id}<br><b>Цена:</b> {formatted_price} ₽<br><b>Площадь:</b> {area} м²",
+                    "style": {
+                        "backgroundColor": "rgba(50, 50, 50, 0.8)",
+                        "color": "white"
+                    }
+                }
+
+                st.pydeck_chart(pdk.Deck(
+                    layers=[layer],
+                    initial_view_state=view_state,
+                    tooltip=tooltip
+                ))
+
+            else:
+                st.warning("😔 По заданным параметрам ничего не найдено.")
         else:
-            st.error(f"Request failed with status code {response.status_code}")
-    except ConnectionError as e:
-        st.error(f"Failed to connect to the server")
+            st.error(f"Ошибка: {response.status_code}")
+    except ConnectionError:
+        st.error("🚨 Не удалось подключиться к серверу")
+
+# Футер
+st.markdown("---")
+st.markdown("Разработано 📌 [Development team] | ITMO 2025")

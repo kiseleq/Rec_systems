@@ -73,7 +73,6 @@ def make_recommendations(homes_fixed, user_actions):
 def get_recommended_homes(recommendation, user_id):
     homes_origin = pd.read_csv('data/homes_new.csv')
     
-    # Фильтруем только рекомендованные дома
     recommended_ids = recommendation[user_id]
     filtered = homes_origin[homes_origin['id'].isin(recommended_ids)]
     

@@ -39,9 +39,6 @@ request_count = 0
 class PredictionInput(BaseModel):
     type: int
 
-@app.get("/stats")
-def stats():
-    return {"request_count": request_count}
 
 @app.get("/health")
 def health():

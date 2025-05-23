@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import pydeck as pdk
 from requests.exceptions import ConnectionError
+from collections import namedtuple
 
 # Настройки API
 ip_api = "127.0.0.1"
@@ -11,7 +12,19 @@ port_api = "500"
 # Сайдбар с вводом параметров
 st.sidebar.title("🔧 Параметры поиска")
 
-type = st.sidebar.selectbox("Выберите тип клиента:", [1, 2, 3, 4, 5])
+Row = namedtuple("Row", ["code", "label"])
+type = st.sidebar.selectbox(
+    "Выберите социальный класс клиента:",
+    [
+        Row(1, "Lower class"),
+        Row(2, "Working class"),
+        Row(3, "Middle class"),
+        Row(4, "Upper middle class"),
+        Row(5, "Upper class")
+    ],
+    format_func=lambda x: x.label
+).code
+
 run_button = st.sidebar.button("🔍 Подобрать рекомендации")
 
 # Основной заголовок

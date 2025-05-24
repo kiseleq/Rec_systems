@@ -46,19 +46,15 @@ Rec_systems/
 git clone https://github.com/kiseleq/Rec_systems.git
 cd Rec_systems
 ```
-2. Переключитесь на рабочую ветку:
-```bash
-git checkout main
-```
-3. Соберите Docker-образ:
+2. Соберите Docker-образ:
 ```bash
 docker build -t apartment-recommendation-service .
 ```
-4. Запустите контейнер:
+3. Запустите контейнер:
 ```bash
 docker run -d --name recommendation_service -p 500:5000 apartment-recommendation-service
 ```
-5. Запустите сайт:
+4. Запустите сайт:й
 ```bash
 streamlit run streamlit_app.py
 ```
